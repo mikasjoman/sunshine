@@ -1,5 +1,6 @@
 package com.omfriheten.sunshine;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -51,10 +52,9 @@ public class ForecastFragment extends Fragment{
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem){
         int id = menuItem.getItemId();
-        Log.e("did run", "or not");
         if(id == R.id.action_refresh){
             FetchWeatherTask weatherTask = new FetchWeatherTask();
-            weatherTask.execute();
+            weatherTask.execute("94043");
             return true;
         }
         return super.onOptionsItemSelected(menuItem);
@@ -109,7 +109,27 @@ public class ForecastFragment extends Fragment{
 
             try {
 
-                URL url = new URL("http://api.openweathermap.org/data/2.5/forecast/daily?q=95136&mode=json&units=metric&cnt=7");
+                String format = "json";
+                String units = "cnt";
+                int days = 7;
+
+                final String FORCAST_BASE_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?";
+                final String QUERY_PARAM = "q";
+                final String FORMAT_PARAM = "mode";
+                final String UNITS_PARAM = "units";
+                final String DAYS_PARAM = "cnt";
+
+                Uri builtUri = Uri.parse(FORCAST_BASE_URL).buildUpon()
+                        .appendQueryParameter(QUERY_PARAM, params[0])
+                        .appendQueryParameter(FORMAT_PARAM, format)
+                        .appendQueryParameter(UNITS_PARAM, units)
+                        .appendQueryParameter(DAYS_PARAM, Integer.toString(days))
+                        .build();
+
+
+
+                URL url = new URL(builtUri.toString());
+
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
